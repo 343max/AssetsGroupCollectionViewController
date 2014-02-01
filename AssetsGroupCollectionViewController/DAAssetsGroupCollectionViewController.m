@@ -24,7 +24,7 @@
 + (UICollectionViewLayout *)layout;
 {
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.itemSize = CGSizeMake(320, 320);
+    layout.itemSize = CGSizeMake(320, 80);
     layout.minimumInteritemSpacing = 0.0;
     layout.minimumLineSpacing = 0.0;
     return layout;
@@ -36,7 +36,7 @@
     
     if (self) {
         _assetsPerRow = 32;
-        _numberOfRows = 32;
+        _numberOfRows = 8;
     }
     
     return self;
@@ -80,7 +80,6 @@
 {
     DAMultiAssetsViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                                             forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor orangeColor];
     
     [cell setAssetsGroup:self.assetsGroup
          firstAssetIndex:indexPath.row * self.assetsPerCell

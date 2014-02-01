@@ -34,13 +34,14 @@
     
     [ALAssetsLibrary disableSharedPhotoStreamsSupport];
     self.assetsLibrary = [[ALAssetsLibrary alloc] init];
+    __block ALAssetsGroup *bestGroup;
     [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                          if (group.numberOfAssets < 500)
-                                              return;
+                                          if (group == nil) {
+                                              photoViewController.assetsGroup = bestGroup;
+                                          }
                                           
-                                          photoViewController.assetsGroup = group;
-                                          *stop = YES;
+                                          bestGroup = (group.numberOfAssets > bestGroup.numberOfAssets ? group : bestGroup);
                                       } failureBlock:^(NSError *error) {
                                           NSLog(@"error: %@", error.description);
                                           NSAssert(NO, error.description);
