@@ -26,6 +26,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        imageView.contentMode = UIViewContentModeTopLeft;
         [self addSubview:imageView];
         _imageView = imageView;
     }
@@ -47,20 +48,17 @@
     self.imageView.backgroundColor = [UIColor greenColor];
 }
 
-- (void)drawAssets:(NSArray *)assets
+- (void)drawAssets:(NSArray *)assets atSize:(CGSize)assetSize
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale);
         CGContextRef contextRef = UIGraphicsGetCurrentContext();
         
-        CGSize thumbSize = CGSizeMake(CGRectGetWidth(self.bounds) / self.assetsPerRow,
-                                      CGRectGetHeight(self.bounds) / self.rows);
-
         for (NSUInteger index = 0; index < assets.count; index++) {
             ALAsset *asset = assets[index];
             NSUInteger row = index / self.assetsPerRow;
             NSUInteger column = index % self.assetsPerRow;
-            CGRect frame = CGRectMake(column * thumbSize.width, row * thumbSize.height, thumbSize.width, thumbSize.height);
+            CGRect frame = CGRectMake(column * assetSize.width, row * assetSize.height, assetSize.width, assetSize.height);
             CGContextDrawImage(contextRef, frame, asset.thumbnail);
         }
         
@@ -77,6 +75,7 @@
        firstAssetIndex:(NSUInteger)firstAssetsIndex
           assetsPerRow:(NSUInteger)assetsPerRow
                   rows:(NSUInteger)rows
+             assetSize:(CGSize)assetSize
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         _assetsPerRow = assetsPerRow;
@@ -90,7 +89,7 @@
                                       options:0
                                    usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                                        if (result == nil) {
-                                           [self drawAssets:assets];
+                                           [self drawAssets:assets atSize:assetSize];
                                            return;
                                        }
                                        

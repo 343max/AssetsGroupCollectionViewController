@@ -15,5 +15,6 @@
 + (UICollectionViewLayout *)layout;
 
 @property (strong, nonatomic) ALAssetsGroup *assetsGroup;
+@property (assign, nonatomic) CGSize assetSize;
 
 @end

@@ -11,11 +11,13 @@
 #import "DAMultiAssetsViewCell.h"
 #import "DAAssetsGroupCollectionViewController.h"
 
-@interface DAAssetsGroupCollectionViewController ()
+@interface DAAssetsGroupCollectionViewController () <UICollectionViewDelegateFlowLayout>
 
 @property (assign, readonly) NSUInteger assetsPerRow;
-@property (assign, readonly) NSUInteger numberOfRows;
+@property (assign, readonly) NSUInteger numberOfRowsPerCell;
 @property (readonly, nonatomic) NSUInteger assetsPerCell;
+
+@property (strong, readonly) NSMutableDictionary *imagePatches;
 
 @end
 
@@ -36,7 +38,8 @@
     
     if (self) {
         _assetsPerRow = 32;
-        _numberOfRows = 8;
+        _numberOfRowsPerCell = 8;
+        _assetSize = CGSizeMake(10.0, 10.0);
     }
     
     return self;
@@ -63,8 +66,11 @@
 
 - (NSUInteger)assetsPerCell
 {
-    return self.assetsPerRow * self.numberOfRows;
+    return self.assetsPerRow * self.numberOfRowsPerCell;
 }
+
+
+#pragma mark UICollectionViewDelegate / UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
@@ -84,9 +90,22 @@
     [cell setAssetsGroup:self.assetsGroup
          firstAssetIndex:indexPath.row * self.assetsPerCell
             assetsPerRow:self.assetsPerRow
-                    rows:self.numberOfRows];
+                    rows:self.numberOfRowsPerCell
+               assetSize:self.assetSize];
     
     return cell;
+}
+
+
+#pragma mark UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger totalRows = ceilf((float)self.assetsGroup.numberOfAssets / (float)self.assetsPerRow);
+    NSUInteger startRow = indexPath.row * self.numberOfRowsPerCell;
+    NSUInteger rows = MIN(totalRows - startRow, self.numberOfRowsPerCell);
+    return CGSizeMake(self.assetsPerRow * self.assetSize.width, rows * self.assetSize.height);
 }
 
 @end

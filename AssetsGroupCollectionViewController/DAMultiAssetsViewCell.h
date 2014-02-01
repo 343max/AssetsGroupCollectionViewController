@@ -15,6 +15,7 @@
 - (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup
        firstAssetIndex:(NSUInteger)firstAssetsIndex
           assetsPerRow:(NSUInteger)assetsPerRow
-                  rows:(NSUInteger)rows;
+                  rows:(NSUInteger)rows
+             assetSize:(CGSize)assetSize;
 
 @end
