@@ -52,6 +52,12 @@
     [self.collectionView registerClass:[DAMultiAssetsViewCell class] forCellWithReuseIdentifier:@"Cell"];
 }
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    _imagePatches = [[NSMutableDictionary alloc] init];
+}
+
 - (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup
 {
     if (assetsGroup == _assetsGroup)
