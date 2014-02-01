@@ -36,7 +36,7 @@
     self.assetsLibrary = [[ALAssetsLibrary alloc] init];
     [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                          if (group.numberOfAssets < 100)
+                                          if (group.numberOfAssets < 500)
                                               return;
                                           
                                           photoViewController.assetsGroup = group;

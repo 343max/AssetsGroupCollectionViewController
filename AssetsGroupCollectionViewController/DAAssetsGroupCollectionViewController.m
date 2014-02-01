@@ -35,8 +35,8 @@
     self = [super initWithCollectionViewLayout:layout];
     
     if (self) {
-        _assetsPerRow = 4;
-        _numberOfRows = 4;
+        _assetsPerRow = 32;
+        _numberOfRows = 32;
     }
     
     return self;
