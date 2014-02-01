@@ -39,6 +39,7 @@
                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
                                           if (group == nil) {
                                               photoViewController.assetsGroup = bestGroup;
+                                              photoViewController.title = [NSString stringWithFormat:@"%li photos", (long)bestGroup.numberOfAssets];
                                           }
                                           
                                           bestGroup = (group.numberOfAssets > bestGroup.numberOfAssets ? group : bestGroup);
