@@ -56,6 +56,7 @@
 		500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAAssetsGroupCollectionViewController.m; sourceTree = "<group>"; };
 		500711EE189D558100B99715 /* DAMultiAssetsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAMultiAssetsViewCell.h; sourceTree = "<group>"; };
 		500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAMultiAssetsViewCell.m; sourceTree = "<group>"; };
+		500711F1189DA36000B99715 /* DAAssetsGroupCollectionViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DAAssetsGroupCollectionViewControllerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +126,7 @@
 				500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */,
 				500711EE189D558100B99715 /* DAMultiAssetsViewCell.h */,
 				500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */,
+				500711F1189DA36000B99715 /* DAAssetsGroupCollectionViewControllerDelegate.h */,
 			);
 			path = AssetsGroupCollectionViewController;
 			sourceTree = "<group>";
@@ -458,6 +460,7 @@
 				500711E5189D509900B99715 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		500711E6189D509900B99715 /* Build configuration list for PBXNativeTarget "AssetsGroupCollectionViewControllerTests" */ = {
 			isa = XCConfigurationList;
@@ -466,6 +469,7 @@
 				500711E8189D509900B99715 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

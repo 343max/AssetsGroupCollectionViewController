@@ -19,6 +19,8 @@
 
 @property (strong, readonly) NSMutableDictionary *imagePatches;
 
+@property (weak) UITapGestureRecognizer *tapGestureRecognizer;
+
 @end
 
 @implementation DAAssetsGroupCollectionViewController
@@ -38,7 +40,7 @@
     
     if (self) {
         _assetsPerRow = 32;
-        _numberOfRowsPerCell = 8;
+        _numberOfRowsPerCell = 16;
         _assetSize = CGSizeMake(10.0, 10.0);
     }
     
@@ -50,6 +52,22 @@
     [super viewDidLoad];
     
     [self.collectionView registerClass:[DAMultiAssetsViewCell class] forCellWithReuseIdentifier:@"Cell"];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap:)];
+    [self.collectionView addGestureRecognizer:tapGestureRecognizer];
+    self.tapGestureRecognizer = tapGestureRecognizer;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [self.collectionView removeGestureRecognizer:self.tapGestureRecognizer];
 }
 
 - (void)didReceiveMemoryWarning
@@ -71,9 +89,29 @@
     }
 }
 
+- (NSInteger)indexOfAssetAtPoint:(CGPoint)point
+{
+    NSInteger x = floorf(point.x / self.assetSize.width);
+    NSInteger y = floorf(point.y / self.assetSize.height);
+    NSInteger index = y * self.assetsPerRow + x;
+    if (index >= self.assetsGroup.numberOfAssets || index < 0) {
+        return NSNotFound;
+    } else {
+        return index;
+    }
+}
+
 - (NSUInteger)assetsPerCell
 {
     return self.assetsPerRow * self.numberOfRowsPerCell;
+}
+
+- (void)didTap:(UITapGestureRecognizer *)tapGestureRecognizer
+{
+    CGPoint location = [tapGestureRecognizer locationInView:self.collectionView];
+    if ([self.delegate respondsToSelector:@selector(assetsGroupCollectionViewController:didTapAssetAtIndex:)]) {
+        [self.delegate assetsGroupCollectionViewController:self didTapAssetAtIndex:[self indexOfAssetAtPoint:location]];
+    }
 }
 
 - (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
@@ -100,6 +138,7 @@
         UIGraphicsEndImageContext();
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
             self.imagePatches[indexSet] = image;
             callback(image);
         });

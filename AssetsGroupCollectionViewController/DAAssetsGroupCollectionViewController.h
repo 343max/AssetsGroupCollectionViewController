@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import "DAAssetsGroupCollectionViewControllerDelegate.h"
+
 @class ALAssetsGroup;
 
 @interface DAAssetsGroupCollectionViewController : UICollectionViewController
@@ -16,5 +18,9 @@
 
 @property (strong, nonatomic) ALAssetsGroup *assetsGroup;
 @property (assign, nonatomic) CGSize assetSize;
+
+@property (assign) id<DAAssetsGroupCollectionViewControllerDelegate> delegate;
+
+- (NSInteger)indexOfAssetAtPoint:(CGPoint)point;
 
 @end
