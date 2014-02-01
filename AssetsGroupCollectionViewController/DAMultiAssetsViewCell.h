@@ -12,10 +12,6 @@
 
 @interface DAMultiAssetsViewCell : UICollectionViewCell
 
-- (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup
-       firstAssetIndex:(NSUInteger)firstAssetsIndex
-          assetsPerRow:(NSUInteger)assetsPerRow
-                  rows:(NSUInteger)rows
-             assetSize:(CGSize)assetSize;
+@property (weak, readonly) UIImageView *imageView;
 
 @end

@@ -58,6 +58,7 @@
         return;
     
     _assetsGroup = assetsGroup;
+    _imagePatches = [[NSMutableDictionary alloc] init];
     
     if ([self isViewLoaded]) {
         [self.collectionView reloadData];
@@ -69,6 +70,60 @@
     return self.assetsPerRow * self.numberOfRowsPerCell;
 }
 
+- (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        CGSize size = CGSizeMake(self.assetSize.width * self.assetsPerRow,
+                                 self.assetSize.height * ceilf((float)assets.count / (float)self.assetsPerRow));
+        
+        UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
+        CGContextRef contextRef = UIGraphicsGetCurrentContext();
+        
+        for (NSUInteger index = 0; index < assets.count; index++) {
+            ALAsset *asset = assets[index];
+            NSUInteger row = index / self.assetsPerRow;
+            NSUInteger column = index % self.assetsPerRow;
+            CGRect frame = CGRectMake(column * self.assetSize.width,
+                                      row * self.assetSize.height,
+                                      self.assetSize.width,
+                                      self.assetSize.height);
+            CGContextDrawImage(contextRef, frame, asset.thumbnail);
+        }
+        
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.imagePatches[indexSet] = image;
+            callback(image);
+        });
+    });
+}
+
+- (void)loadAndDrawAssetsAtIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
+{
+    if (self.imagePatches[indexSet]) {
+        callback(self.imagePatches[indexSet]);
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSMutableArray *assets = [[NSMutableArray alloc] init];
+
+        [self.assetsGroup enumerateAssetsAtIndexes:indexSet
+                                           options:0
+                                        usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                            if (result == nil) {
+                                                [self drawAssets:assets
+                                                     withIndexes:indexSet
+                                                        callback:callback];
+                                                return;
+                                            }
+                                            
+                                            [assets addObject:result];
+                                        }];
+    });
+}
 
 #pragma mark UICollectionViewDelegate / UICollectionViewDataSource
 
@@ -82,16 +137,22 @@
     return ceilf((float)self.assetsGroup.numberOfAssets / (float)self.assetsPerCell);
 }
 
+- (NSIndexSet *)indexSetForIndexPath:(NSIndexPath *)indexPath
+{
+    NSUInteger loc = self.assetsPerCell * indexPath.row;
+    NSUInteger length = MIN(self.assetsPerRow * self.numberOfRowsPerCell, self.assetsGroup.numberOfAssets - loc);
+    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(loc, length)];
+}
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     DAMultiAssetsViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                                             forIndexPath:indexPath];
     
-    [cell setAssetsGroup:self.assetsGroup
-         firstAssetIndex:indexPath.row * self.assetsPerCell
-            assetsPerRow:self.assetsPerRow
-                    rows:self.numberOfRowsPerCell
-               assetSize:self.assetSize];
+    [self loadAndDrawAssetsAtIndexes:[self indexSetForIndexPath:indexPath]
+                            callback:^(UIImage *image) {
+                                cell.imageView.image = image;
+                            }];
     
     return cell;
 }
