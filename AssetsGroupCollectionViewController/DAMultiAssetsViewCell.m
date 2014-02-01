@@ -6,7 +6,16 @@
 //  Copyright (c) 2014 Max von Webel. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "DAMultiAssetsViewCell.h"
+
+@interface DAMultiAssetsViewCell ()
+
+@property (assign, readonly) NSUInteger assetsPerRow;
+@property (assign, readonly) NSUInteger rows;
+
+@end
 
 @implementation DAMultiAssetsViewCell
 
@@ -19,13 +28,21 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+- (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup
+       firstAssetIndex:(NSUInteger)firstAssetsIndex
+          assetsPerRow:(NSUInteger)assetsPerRow
+                  rows:(NSUInteger)rows
 {
-    // Drawing code
+    _assetsPerRow = assetsPerRow;
+    _rows = rows;
+    
+    NSInteger length = MIN(assetsPerRow * rows, assetsGroup.numberOfAssets - firstAssetsIndex);
+    
+    [assetsGroup enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(firstAssetsIndex, length)]
+                                  options:0
+                               usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                   NSLog(@"index: %lu", (unsigned long)index);
+                               }];
 }
-*/
 
 @end

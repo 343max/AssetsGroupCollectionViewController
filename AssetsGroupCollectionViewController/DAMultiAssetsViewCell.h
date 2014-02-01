@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class ALAssetsGroup;
+
 @interface DAMultiAssetsViewCell : UICollectionViewCell
+
+- (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup
+       firstAssetIndex:(NSUInteger)firstAssetsIndex
+          assetsPerRow:(NSUInteger)assetsPerRow
+                  rows:(NSUInteger)rows;
 
 @end

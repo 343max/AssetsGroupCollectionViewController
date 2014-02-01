@@ -13,8 +13,9 @@
 
 @interface DAAssetsGroupCollectionViewController ()
 
-@property (assign, readonly) NSUInteger itemsPerRow;
+@property (assign, readonly) NSUInteger assetsPerRow;
 @property (assign, readonly) NSUInteger numberOfRows;
+@property (readonly, nonatomic) NSUInteger assetsPerCell;
 
 @end
 
@@ -24,6 +25,8 @@
 {
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.itemSize = CGSizeMake(320, 320);
+    layout.minimumInteritemSpacing = 0.0;
+    layout.minimumLineSpacing = 0.0;
     return layout;
 }
 
@@ -32,7 +35,7 @@
     self = [super initWithCollectionViewLayout:layout];
     
     if (self) {
-        _itemsPerRow = 4;
+        _assetsPerRow = 4;
         _numberOfRows = 4;
     }
     
@@ -58,6 +61,11 @@
     }
 }
 
+- (NSUInteger)assetsPerCell
+{
+    return self.assetsPerRow * self.numberOfRows;
+}
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     return 1;
@@ -65,7 +73,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return ceilf(self.assetsGroup.numberOfAssets / (self.itemsPerRow * self.numberOfRows));
+    return ceilf((float)self.assetsGroup.numberOfAssets / (float)self.assetsPerCell);
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -73,6 +81,12 @@
     DAMultiAssetsViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Cell"
                                                                             forIndexPath:indexPath];
     cell.backgroundColor = [UIColor orangeColor];
+    
+    [cell setAssetsGroup:self.assetsGroup
+         firstAssetIndex:indexPath.row * self.assetsPerCell
+            assetsPerRow:self.assetsPerRow
+                    rows:self.numberOfRows];
+    
     return cell;
 }
 

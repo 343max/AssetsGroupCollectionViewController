@@ -32,10 +32,11 @@
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:photoViewController];
     self.window.rootViewController = navigationController;
     
+    [ALAssetsLibrary disableSharedPhotoStreamsSupport];
     self.assetsLibrary = [[ALAssetsLibrary alloc] init];
     [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
                                       usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                          if (group.numberOfAssets == 0)
+                                          if (group.numberOfAssets < 100)
                                               return;
                                           
                                           photoViewController.assetsGroup = group;
