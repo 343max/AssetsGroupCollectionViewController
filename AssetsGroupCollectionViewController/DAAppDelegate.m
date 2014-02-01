@@ -6,7 +6,18 @@
 //  Copyright (c) 2014 Max von Webel. All rights reserved.
 //
 
+#import <AssetsLibrary/AssetsLibrary.h>
+
+#import "DAAssetsGroupCollectionViewController.h"
+
 #import "DAAppDelegate.h"
+
+@interface DAAppDelegate ()
+
+@property (strong) ALAssetsLibrary *assetsLibrary;
+
+@end
+
 
 @implementation DAAppDelegate
 
@@ -15,6 +26,25 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    UICollectionViewLayout *layout = [DAAssetsGroupCollectionViewController layout];
+    DAAssetsGroupCollectionViewController *photoViewController = [[DAAssetsGroupCollectionViewController alloc] initWithCollectionViewLayout:layout];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:photoViewController];
+    self.window.rootViewController = navigationController;
+    
+    self.assetsLibrary = [[ALAssetsLibrary alloc] init];
+    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll
+                                      usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                          if (group.numberOfAssets == 0)
+                                              return;
+                                          
+                                          photoViewController.assetsGroup = group;
+                                          *stop = YES;
+                                      } failureBlock:^(NSError *error) {
+                                          NSLog(@"error: %@", error.description);
+                                          NSAssert(NO, error.description);
+                                      }];
+    
     [self.window makeKeyAndVisible];
     return YES;
 }

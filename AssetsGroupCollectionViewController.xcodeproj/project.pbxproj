@@ -19,6 +19,9 @@
 		500711D6189D509800B99715 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 500711BE189D509800B99715 /* UIKit.framework */; };
 		500711DE189D509900B99715 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 500711DC189D509900B99715 /* InfoPlist.strings */; };
 		500711E0189D509900B99715 /* AssetsGroupCollectionViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 500711DF189D509900B99715 /* AssetsGroupCollectionViewControllerTests.m */; };
+		500711EA189D50B900B99715 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 500711E9189D50B900B99715 /* AssetsLibrary.framework */; };
+		500711ED189D529800B99715 /* DAAssetsGroupCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */; };
+		500711F0189D558100B99715 /* DAMultiAssetsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,11 @@
 		500711DB189D509800B99715 /* AssetsGroupCollectionViewControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AssetsGroupCollectionViewControllerTests-Info.plist"; sourceTree = "<group>"; };
 		500711DD189D509900B99715 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		500711DF189D509900B99715 /* AssetsGroupCollectionViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AssetsGroupCollectionViewControllerTests.m; sourceTree = "<group>"; };
+		500711E9189D50B900B99715 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		500711EB189D529800B99715 /* DAAssetsGroupCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAssetsGroupCollectionViewController.h; sourceTree = "<group>"; };
+		500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAAssetsGroupCollectionViewController.m; sourceTree = "<group>"; };
+		500711EE189D558100B99715 /* DAMultiAssetsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAMultiAssetsViewCell.h; sourceTree = "<group>"; };
+		500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAMultiAssetsViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				500711EA189D50B900B99715 /* AssetsLibrary.framework in Frameworks */,
 				500711BD189D509800B99715 /* CoreGraphics.framework in Frameworks */,
 				500711BF189D509800B99715 /* UIKit.framework in Frameworks */,
 				500711BB189D509800B99715 /* Foundation.framework in Frameworks */,
@@ -96,6 +105,7 @@
 		500711B9189D509800B99715 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				500711E9189D50B900B99715 /* AssetsLibrary.framework */,
 				500711BA189D509800B99715 /* Foundation.framework */,
 				500711BC189D509800B99715 /* CoreGraphics.framework */,
 				500711BE189D509800B99715 /* UIKit.framework */,
@@ -111,6 +121,10 @@
 				500711CA189D509800B99715 /* DAAppDelegate.m */,
 				500711CC189D509800B99715 /* Images.xcassets */,
 				500711C1189D509800B99715 /* Supporting Files */,
+				500711EB189D529800B99715 /* DAAssetsGroupCollectionViewController.h */,
+				500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */,
+				500711EE189D558100B99715 /* DAMultiAssetsViewCell.h */,
+				500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */,
 			);
 			path = AssetsGroupCollectionViewController;
 			sourceTree = "<group>";
@@ -240,8 +254,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				500711F0189D558100B99715 /* DAMultiAssetsViewCell.m in Sources */,
 				500711C7189D509800B99715 /* main.m in Sources */,
 				500711CB189D509800B99715 /* DAAppDelegate.m in Sources */,
+				500711ED189D529800B99715 /* DAAssetsGroupCollectionViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
