@@ -52,6 +52,8 @@
     [super viewDidLoad];
     
     [self.collectionView registerClass:[DAMultiAssetsViewCell class] forCellWithReuseIdentifier:@"Cell"];
+    
+    self.collectionView.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewDidAppear:(BOOL)animated
