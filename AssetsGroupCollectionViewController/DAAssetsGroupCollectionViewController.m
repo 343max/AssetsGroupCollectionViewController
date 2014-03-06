@@ -268,12 +268,12 @@
 
 #pragma mark UICollectionViewDelegateFlowLayout
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger totalRows = ceilf((float)self.assetsGroup.numberOfAssets / (float)self.assetsPerRow);
-    NSUInteger startRow = indexPath.row * self.numberOfRowsPerCell;
-    NSUInteger rows = MIN(totalRows - startRow, self.numberOfRowsPerCell);
+    NSIndexSet *indexSet = [self indexSetForIndexPath:indexPath];
+    NSUInteger rows = ceilf((float)indexSet.count / (float)self.assetsPerRow);
     return CGSizeMake(self.assetsPerRow * self.assetSize.width, rows * self.assetSize.height);
 }
 
