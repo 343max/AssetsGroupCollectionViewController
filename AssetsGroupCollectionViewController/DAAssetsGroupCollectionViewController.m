@@ -271,10 +271,15 @@
            viewForSupplementaryElementOfKind:(NSString *)kind
                                  atIndexPath:(NSIndexPath *)indexPath
 {
+    DAAssetGroupSection *section = [self sectionGroupForSection:indexPath.section];
+    
+    if (section.title == nil) {
+        return nil;
+    }
+    
     DAAssetGroupCollectionViewSectionHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                          withReuseIdentifier:@"SectionHeader"
                                                                                                 forIndexPath:indexPath];
-    DAAssetGroupSection *section = [self sectionGroupForSection:indexPath.section];
     header.label.text = section.title;
     return header;
 }
@@ -295,7 +300,11 @@
                   layout:(UICollectionViewLayout *)collectionViewLayout
 referenceSizeForHeaderInSection:(NSInteger)section
 {
-    return CGSizeMake(CGRectGetWidth(self.view.bounds), 30);
+    if ([self sectionGroupForSection:section].title) {
+        return CGSizeMake(CGRectGetWidth(self.view.bounds), 30);
+    } else {
+        return CGSizeZero;
+    }
 }
 
 @end
