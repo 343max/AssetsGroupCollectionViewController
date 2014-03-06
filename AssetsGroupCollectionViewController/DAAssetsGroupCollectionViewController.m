@@ -8,16 +8,21 @@
 
 #import <AssetsLibrary/AssetsLibrary.h>
 
+#import "DAAssetGroupSection.h"
+#import "DAAssetGroupSectionGroup.h"
 #import "DAMultiAssetsViewCell.h"
 #import "DAAssetsGroupCollectionViewController.h"
 
 @interface DAAssetsGroupCollectionViewController () <UICollectionViewDelegateFlowLayout>
+
+@property (strong, readonly) NSCalendar *calendar;
 
 @property (assign, readonly) NSUInteger assetsPerRow;
 @property (assign, readonly) NSUInteger numberOfRowsPerCell;
 @property (readonly, nonatomic) NSUInteger assetsPerCell;
 
 @property (strong, readonly) NSMutableDictionary *imagePatches;
+@property (strong, nonatomic) NSArray *sections;
 
 @property (weak) UITapGestureRecognizer *tapGestureRecognizer;
 
@@ -39,6 +44,7 @@
     self = [super initWithCollectionViewLayout:layout];
     
     if (self) {
+        _calendar = [NSCalendar currentCalendar];
         _assetsPerRow = 32;
         _numberOfRowsPerCell = 16;
         _assetSize = CGSizeMake(10.0, 10.0);
@@ -86,9 +92,46 @@
     _assetsGroup = assetsGroup;
     _imagePatches = [[NSMutableDictionary alloc] init];
     
+    DAAssetGroupSection *allAssetsSection = [[DAAssetGroupSection alloc] init];
+    [allAssetsSection addIndexesInRange:NSMakeRange(0, assetsGroup.numberOfAssets)];
+    
+    self.sections = @[ allAssetsSection ];
+    
+    [self calculateSections];
+}
+
+- (void)setSections:(NSArray *)sections
+{
+    if (_sections == sections)
+        return;
+    
+    _sections = sections;
+    
+    _imagePatches = [[NSMutableDictionary alloc] init];
+    
     if ([self isViewLoaded]) {
         [self.collectionView reloadData];
     }
+}
+
+- (void)calculateSections
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        DAAssetGroupSectionGroup *sectionGroup = [[DAAssetGroupSectionGroup alloc] initWithEra:NSCalendarUnitYear
+                                                                                      calendar:self.calendar];
+        
+        [self.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+            if (result) {
+                [sectionGroup addAsset:result withIndex:index];
+            } else {
+                NSLog(@"complete");
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.sections = [sectionGroup orderedSections];
+                });
+            }
+        }];
+    });
 }
 
 - (NSInteger)indexOfAssetAtPoint:(CGPoint)point
@@ -118,6 +161,8 @@
 
 - (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
 {
+    NSDictionary *imagePatches = self.imagePatches;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         CGSize size = CGSizeMake(self.assetSize.width * self.assetsPerRow,
                                  self.assetSize.height * ceilf((float)assets.count / (float)self.assetsPerRow));
@@ -140,7 +185,13 @@
         UIGraphicsEndImageContext();
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
+            if (imagePatches != self.imagePatches) {
+                NSLog(@"throwing image patch away because it has become obsolete in the meantime");
+                return;
+            }
+            
+#warning re-enable
+//            NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
             self.imagePatches[indexSet] = image;
             callback(image);
         });
