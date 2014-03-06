@@ -188,7 +188,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (imagePatches != self.imagePatches) {
-                NSLog(@"throwing image patch away because it has become obsolete in the meantime");
+                NSLog(@"throwing image patch away because it became obsolete in the meantime");
                 return;
             }
             
