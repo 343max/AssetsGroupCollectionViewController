@@ -171,8 +171,6 @@
                                  self.assetSize.height * ceilf((float)assets.count / (float)self.assetsPerRow));
         
         UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
-        CGContextRef contextRef = UIGraphicsGetCurrentContext();
-        
         for (NSUInteger index = 0; index < assets.count; index++) {
             ALAsset *asset = assets[index];
             NSUInteger row = index / self.assetsPerRow;
@@ -181,7 +179,7 @@
                                       row * self.assetSize.height,
                                       self.assetSize.width,
                                       self.assetSize.height);
-            CGContextDrawImage(contextRef, frame, asset.thumbnail);
+            [[UIImage imageWithCGImage:asset.thumbnail] drawInRect:frame];
         }
         
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
