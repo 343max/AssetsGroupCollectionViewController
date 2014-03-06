@@ -22,6 +22,7 @@
 		500711EA189D50B900B99715 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 500711E9189D50B900B99715 /* AssetsLibrary.framework */; };
 		500711ED189D529800B99715 /* DAAssetsGroupCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 500711EC189D529800B99715 /* DAAssetsGroupCollectionViewController.m */; };
 		500711F0189D558100B99715 /* DAMultiAssetsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */; };
+		5014692618C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 5014692518C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.m */; };
 		5037F0BB18C75E9800E04CFA /* DAAssetGroupSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 5037F0BA18C75E9800E04CFA /* DAAssetGroupSection.m */; };
 		5037F0C518C8835700E04CFA /* DAAssetGroupSectionGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 5037F0C418C8835700E04CFA /* DAAssetGroupSectionGroup.m */; };
 /* End PBXBuildFile section */
@@ -59,6 +60,8 @@
 		500711EE189D558100B99715 /* DAMultiAssetsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAMultiAssetsViewCell.h; sourceTree = "<group>"; };
 		500711EF189D558100B99715 /* DAMultiAssetsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAMultiAssetsViewCell.m; sourceTree = "<group>"; };
 		500711F1189DA36000B99715 /* DAAssetsGroupCollectionViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DAAssetsGroupCollectionViewControllerDelegate.h; sourceTree = "<group>"; };
+		5014692418C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAssetGroupCollectionViewSectionHeader.h; sourceTree = "<group>"; };
+		5014692518C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAAssetGroupCollectionViewSectionHeader.m; sourceTree = "<group>"; };
 		5037F0B918C75E9800E04CFA /* DAAssetGroupSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAssetGroupSection.h; sourceTree = "<group>"; };
 		5037F0BA18C75E9800E04CFA /* DAAssetGroupSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DAAssetGroupSection.m; sourceTree = "<group>"; };
 		5037F0C318C8835700E04CFA /* DAAssetGroupSectionGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAAssetGroupSectionGroup.h; sourceTree = "<group>"; };
@@ -137,6 +140,8 @@
 				5037F0BA18C75E9800E04CFA /* DAAssetGroupSection.m */,
 				5037F0C318C8835700E04CFA /* DAAssetGroupSectionGroup.h */,
 				5037F0C418C8835700E04CFA /* DAAssetGroupSectionGroup.m */,
+				5014692418C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.h */,
+				5014692518C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.m */,
 			);
 			path = AssetsGroupCollectionViewController;
 			sourceTree = "<group>";
@@ -266,6 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5014692618C8B58F00785E1B /* DAAssetGroupCollectionViewSectionHeader.m in Sources */,
 				500711F0189D558100B99715 /* DAMultiAssetsViewCell.m in Sources */,
 				500711C7189D509800B99715 /* main.m in Sources */,
 				500711CB189D509800B99715 /* DAAppDelegate.m in Sources */,

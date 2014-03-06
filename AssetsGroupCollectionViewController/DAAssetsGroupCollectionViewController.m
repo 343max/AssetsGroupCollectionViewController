@@ -10,6 +10,7 @@
 
 #import "DAAssetGroupSection.h"
 #import "DAAssetGroupSectionGroup.h"
+#import "DAAssetGroupCollectionViewSectionHeader.h"
 #import "DAMultiAssetsViewCell.h"
 #import "DAAssetsGroupCollectionViewController.h"
 
@@ -58,6 +59,9 @@
     [super viewDidLoad];
     
     [self.collectionView registerClass:[DAMultiAssetsViewCell class] forCellWithReuseIdentifier:@"Cell"];
+    [self.collectionView registerClass:[DAAssetGroupCollectionViewSectionHeader class]
+            forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                   withReuseIdentifier:@"SectionHeader"];
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
 }
@@ -188,8 +192,7 @@
                 return;
             }
             
-#warning re-enable
-//            NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
+            NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
             self.imagePatches[indexSet] = image;
             callback(image);
         });
@@ -263,6 +266,17 @@
     return cell;
 }
 
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath
+{
+    DAAssetGroupCollectionViewSectionHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                         withReuseIdentifier:@"SectionHeader"
+                                                                                                forIndexPath:indexPath];
+    header.label.text = [NSString stringWithFormat:@"section: %li, item: %li", (long)indexPath.section, (long)indexPath.item];
+    return header;
+}
+
 
 #pragma mark UICollectionViewDelegateFlowLayout
 
@@ -273,6 +287,13 @@
     NSIndexSet *indexSet = [self indexSetForIndexPath:indexPath];
     NSUInteger rows = ceilf((float)indexSet.count / (float)self.assetsPerRow);
     return CGSizeMake(self.assetsPerRow * self.assetSize.width, rows * self.assetSize.height);
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+referenceSizeForHeaderInSection:(NSInteger)section
+{
+    return CGSizeMake(CGRectGetWidth(self.view.bounds), 30);
 }
 
 @end
