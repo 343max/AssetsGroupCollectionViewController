@@ -10,8 +10,9 @@
 
 @interface DAAssetGroupSection : NSObject
 
-- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate;
+- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate title:(NSString *)title;
 
+@property (strong, readonly) NSString *title;
 @property (strong, readonly) NSDate *fromDate;
 @property (strong, readonly) NSDate *toDate;
 

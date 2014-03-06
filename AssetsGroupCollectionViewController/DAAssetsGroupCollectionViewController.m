@@ -122,7 +122,8 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         DAAssetGroupSectionGroup *sectionGroup = [[DAAssetGroupSectionGroup alloc] initWithEra:NSCalendarUnitYear
-                                                                                      calendar:self.calendar];
+                                                                                      calendar:self.calendar
+                                                                              dateFormatString:@"YYYY"];
         
         [self.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
             if (result) {
@@ -273,7 +274,8 @@
     DAAssetGroupCollectionViewSectionHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                          withReuseIdentifier:@"SectionHeader"
                                                                                                 forIndexPath:indexPath];
-    header.label.text = [NSString stringWithFormat:@"section: %li, item: %li", (long)indexPath.section, (long)indexPath.item];
+    DAAssetGroupSection *section = [self sectionGroupForSection:indexPath.section];
+    header.label.text = section.title;
     return header;
 }
 

@@ -12,7 +12,8 @@
 
 @interface DAAssetGroupSectionGroup : NSObject
 
-- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar*)calendar;
+- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar*)calendar dateFormatString:(NSString *)dateFormatString;
+- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar*)calendar dateFormatter:(NSDateFormatter *)dateFormatter;
 - (void)addAsset:(ALAsset *)asset withIndex:(NSInteger)index;
 - (NSArray *)orderedSections;
 

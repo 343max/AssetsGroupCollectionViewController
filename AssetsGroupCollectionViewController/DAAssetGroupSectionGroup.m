@@ -15,19 +15,28 @@
 
 @property (strong, readonly) NSMutableSet *sections;
 @property (strong) DAAssetGroupSection *lastSection;
+@property (strong) NSDateFormatter *dateFormatter;
 
 @end
 
 
 @implementation DAAssetGroupSectionGroup
 
-- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar *)calendar
+- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar *)calendar dateFormatString:(NSString *)dateFormatString
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = dateFormatString;
+    return [self initWithEra:eraUnit calendar:calendar dateFormatter:dateFormatter];
+}
+
+- (id)initWithEra:(NSCalendarUnit)eraUnit calendar:(NSCalendar *)calendar dateFormatter:(NSDateFormatter *)dateFormatter
 {
     self = [super init];
     
     if (self) {
         _eraUnit = eraUnit;
         _calendar = calendar;
+        _dateFormatter = dateFormatter;
         _sections = [[NSMutableSet alloc] init];
     }
     
@@ -50,8 +59,9 @@
     NSAssert(success, @"could not calculate the date");
 
     NSDate *toDate = [fromDate dateByAddingTimeInterval:interval];
+    NSString *title = [self.dateFormatter stringFromDate:fromDate];
     
-    return [[DAAssetGroupSection alloc] initWithFromDate:fromDate toDate:toDate];
+    return [[DAAssetGroupSection alloc] initWithFromDate:fromDate toDate:toDate title:title];
 }
 
 - (DAAssetGroupSection *)sectionForDate:(NSDate *)date create:(BOOL)create

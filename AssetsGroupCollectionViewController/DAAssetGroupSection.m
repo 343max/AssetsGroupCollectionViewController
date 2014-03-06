@@ -28,13 +28,14 @@
     return self;
 }
 
-- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate title:(NSString *)title
 {
     self = [self init];
     
     if (self) {
         _fromDate = fromDate;
         _toDate = toDate;
+        _title = title;
     }
     
     return self;
