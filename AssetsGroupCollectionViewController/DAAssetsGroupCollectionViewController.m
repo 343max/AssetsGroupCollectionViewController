@@ -223,23 +223,33 @@
     });
 }
 
+- (DAAssetGroupSection *)sectionGroupForSection:(NSInteger)section
+{
+    return self.sections[section];
+}
+
 #pragma mark UICollectionViewDelegate / UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return 1;
+    return self.sections.count;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return ceilf((float)self.assetsGroup.numberOfAssets / (float)self.assetsPerCell);
+    return ceilf((float)[self sectionGroupForSection:section].assetIndexSet.count / (float)self.assetsPerCell);
 }
 
 - (NSIndexSet *)indexSetForIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger loc = self.assetsPerCell * indexPath.row;
-    NSUInteger length = MIN(self.assetsPerRow * self.numberOfRowsPerCell, self.assetsGroup.numberOfAssets - loc);
-    return [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(loc, length)];
+    DAAssetGroupSection *section = [self sectionGroupForSection:indexPath.section];
+    NSIndexSet *sectionIndexSet = section.assetIndexSet;
+    
+    NSUInteger loc = self.assetsPerCell * indexPath.row + sectionIndexSet.firstIndex;
+    NSUInteger length = MIN(self.assetsPerCell, sectionIndexSet.lastIndex - loc);
+    NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(loc, length)];
+    NSAssert(indexSet.lastIndex < self.assetsGroup.numberOfAssets, @"index set is to big for assetGroup");
+    return indexSet;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath

@@ -17,14 +17,24 @@
 
 @implementation DAAssetGroupSection
 
-- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+- (id)init
 {
     self = [super init];
     
     if (self) {
+        _indexSet = [[NSMutableIndexSet alloc] init];
+    }
+    
+    return self;
+}
+
+- (id)initWithFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+{
+    self = [self init];
+    
+    if (self) {
         _fromDate = fromDate;
         _toDate = toDate;
-        _indexSet = [[NSMutableIndexSet alloc] init];
     }
     
     return self;
