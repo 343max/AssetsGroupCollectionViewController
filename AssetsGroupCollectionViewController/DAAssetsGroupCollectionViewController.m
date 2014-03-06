@@ -124,8 +124,6 @@
             if (result) {
                 [sectionGroup addAsset:result withIndex:index];
             } else {
-                NSLog(@"complete");
-                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.sections = [sectionGroup orderedSections];
                 });
