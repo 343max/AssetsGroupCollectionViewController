@@ -47,7 +47,7 @@
     if (self) {
         _calendar = [NSCalendar currentCalendar];
         _assetsPerRow = 32;
-        _numberOfRowsPerCell = 16;
+        _numberOfRowsPerCell = 4;
         _assetSize = CGSizeMake(10.0, 10.0);
     }
     
