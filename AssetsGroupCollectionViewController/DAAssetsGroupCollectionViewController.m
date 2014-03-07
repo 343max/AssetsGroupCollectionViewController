@@ -164,7 +164,7 @@
 
 - (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
 {
-    NSDictionary *imagePatches = self.imagePatches;
+    NSMutableDictionary *imagePatches = self.imagePatches;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         CGSize size = CGSizeMake(self.assetSize.width * self.assetsPerRow,
@@ -187,7 +187,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             if (imagePatches != self.imagePatches) {
-                NSLog(@"throwing image patch away because it became obsolete in the meantime");
+                NSLog(@"throwing image patch for indexes %@ away because it became obsolete in the meantime", indexSet);
                 return;
             }
             
