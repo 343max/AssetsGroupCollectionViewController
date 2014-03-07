@@ -200,8 +200,10 @@
 
 - (void)loadAndDrawAssetsAtIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
 {
-    if (self.imagePatches[indexSet]) {
-        callback(self.imagePatches[indexSet]);
+    NSMutableDictionary *imagePatches = self.imagePatches;
+
+    if (imagePatches[indexSet]) {
+        callback(imagePatches[indexSet]);
         return;
     }
     
@@ -211,6 +213,12 @@
         [self.assetsGroup enumerateAssetsAtIndexes:indexSet
                                            options:0
                                         usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                            if (self.imagePatches != imagePatches) {
+                                                NSLog(@"cancel loading assets because they bacame obsolete: %@", indexSet);
+                                                *stop = YES;
+                                                return;
+                                            }
+                                            
                                             if (result == nil) {
                                                 [self drawAssets:assets
                                                      withIndexes:indexSet
