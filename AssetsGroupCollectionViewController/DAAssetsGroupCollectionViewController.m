@@ -264,8 +264,6 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"section: %li, asset count: %lu", (long)section, (unsigned long)[self sectionGroupForSection:section].assetIndexSet.count);
-    NSLog(@"number of cells: %f", ceilf((float)[self sectionGroupForSection:section].assetIndexSet.count / (float)self.assetsPerCell));
     return ceilf((float)[self sectionGroupForSection:section].assetIndexSet.count / (float)self.assetsPerCell);
 }
 
@@ -278,7 +276,6 @@
     
     NSUInteger loc = self.assetsPerCell * row + sectionIndexSet.firstIndex;
     NSUInteger length = MIN(self.assetsPerCell, sectionIndexSet.lastIndex - loc);
-    NSLog(@"section: %lu, row: %lu, length: %lu, loc: %lu, count: %lu", (long)section, (long)row, (unsigned long)length, (unsigned long)loc, (unsigned long)sectionIndexSet.count);
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(loc, length)];
     NSAssert(indexSet.lastIndex < self.orderedAssets.count, @"index set is to big for assetGroup");
     return indexSet;
