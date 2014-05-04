@@ -195,7 +195,7 @@
     }
 }
 
-- (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
+- (void)drawAssets:(NSArray *)assets withIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image, BOOL fromCache))callback
 {
     NSMutableDictionary *imagePatches = self.imagePatches;
     
@@ -229,17 +229,17 @@
             }
             NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
             self.imagePatches[indexSet] = image;
-            callback(image);
+            callback(image, NO);
         });
     });
 }
 
-- (void)loadAndDrawAssetsAtIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image))callback
+- (void)loadAndDrawAssetsAtIndexes:(NSIndexSet *)indexSet callback:(void(^)(UIImage *image, BOOL fromCache))callback
 {
     NSMutableDictionary *imagePatches = self.imagePatches;
 
     if (imagePatches[indexSet]) {
-        callback(imagePatches[indexSet]);
+        callback(imagePatches[indexSet], YES);
         return;
     }
     
@@ -287,7 +287,10 @@
                                                                             forIndexPath:indexPath];
     
     [self loadAndDrawAssetsAtIndexes:[self indexSetForIndexPath:indexPath]
-                            callback:^(UIImage *image) {
+                            callback:^(UIImage *image, BOOL fromCache) {
+                                if (!fromCache && ![[collectionView indexPathForCell:cell] isEqual:indexPath])
+                                    return;
+                                
                                 cell.imageView.image = image;
                             }];
     
