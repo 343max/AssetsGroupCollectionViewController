@@ -98,12 +98,6 @@
     _assetsGroup = assetsGroup;
     _imagePatches = [[NSMutableDictionary alloc] init];
 
-#warning re-enable?
-//    DAAssetGroupSection *allAssetsSection = [[DAAssetGroupSection alloc] init];
-//    [allAssetsSection addIndexesInRange:NSMakeRange(0, assetsGroup.numberOfAssets)];
-//    
-//    self.sections = @[ allAssetsSection ];
-    
     [self createOrderedAssetSet];
 }
 
