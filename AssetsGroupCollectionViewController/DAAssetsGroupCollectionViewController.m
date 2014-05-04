@@ -27,6 +27,8 @@
 
 @property (weak) UITapGestureRecognizer *tapGestureRecognizer;
 
+@property (strong, nonatomic) NSOrderedSet *orderedAssets;
+
 @end
 
 @implementation DAAssetsGroupCollectionViewController
@@ -47,7 +49,7 @@
     if (self) {
         _calendar = [NSCalendar currentCalendar];
         _assetsPerRow = 32;
-        _numberOfRowsPerCell = 4;
+        _numberOfRowsPerCell = 8;
         _assetSize = CGSizeMake(10.0, 10.0);
     }
     
@@ -95,13 +97,14 @@
     
     _assetsGroup = assetsGroup;
     _imagePatches = [[NSMutableDictionary alloc] init];
+
+#warning re-enable?
+//    DAAssetGroupSection *allAssetsSection = [[DAAssetGroupSection alloc] init];
+//    [allAssetsSection addIndexesInRange:NSMakeRange(0, assetsGroup.numberOfAssets)];
+//    
+//    self.sections = @[ allAssetsSection ];
     
-    DAAssetGroupSection *allAssetsSection = [[DAAssetGroupSection alloc] init];
-    [allAssetsSection addIndexesInRange:NSMakeRange(0, assetsGroup.numberOfAssets)];
-    
-    self.sections = @[ allAssetsSection ];
-    
-    [self calculateSections];
+    [self createOrderedAssetSet];
 }
 
 - (void)setSections:(NSArray *)sections
@@ -118,22 +121,52 @@
     }
 }
 
+- (void)createOrderedAssetSet
+{
+    NSMutableSet *assetSet = [[NSMutableSet alloc] init];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [self.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+            if (result) {
+                [assetSet addObject:result];
+            } else {
+                NSArray *sortedAssets = [[assetSet allObjects] sortedArrayUsingComparator:^NSComparisonResult(ALAsset *asset1, ALAsset *asset2) {
+                    NSDate *date1 = [asset1 valueForProperty:ALAssetPropertyDate];
+                    NSDate *date2 = [asset2 valueForProperty:ALAssetPropertyDate];
+                    
+                    return [date1 compare:date2];
+                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.orderedAssets = [[NSOrderedSet alloc] initWithArray:sortedAssets];
+                });
+            }
+        }];
+    });
+}
+
+- (void)setOrderedAssets:(NSOrderedSet *)orderedAssets
+{
+    if ([_orderedAssets isEqual:orderedAssets])
+        return;
+    
+    _orderedAssets = orderedAssets;
+    
+    [self calculateSections];
+}
+
 - (void)calculateSections
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         DAAssetGroupSectionGroup *sectionGroup = [[DAAssetGroupSectionGroup alloc] initWithEra:NSCalendarUnitYear
                                                                                       calendar:self.calendar
                                                                               dateFormatString:@"YYYY"];
-        
-        [self.assetsGroup enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-            if (result) {
-                [sectionGroup addAsset:result withIndex:index];
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.sections = [sectionGroup orderedSections];
-                });
-            }
+        [self.orderedAssets enumerateObjectsUsingBlock:^(ALAsset *asset, NSUInteger index, BOOL *stop) {
+            [sectionGroup addAsset:asset withIndex:index];
         }];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.sections = [sectionGroup orderedSections];
+        });
     });
 }
 
@@ -191,6 +224,9 @@
                 return;
             }
             
+            if (self.imagePatches[indexSet] != nil) {
+                NSLog(@"\n\n\nwe have drawn imagePatch %@ twice. Room for optimization\n\n\n", indexSet);
+            }
             NSAssert(self.imagePatches[indexSet] == nil, @"we have drawn an image patch twice. Room for optimizations");
             self.imagePatches[indexSet] = image;
             callback(image);
@@ -208,25 +244,9 @@
     }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        NSMutableArray *assets = [[NSMutableArray alloc] init];
-
-        [self.assetsGroup enumerateAssetsAtIndexes:indexSet
-                                           options:0
-                                        usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                                            if (self.imagePatches != imagePatches) {
-                                                *stop = YES;
-                                                return;
-                                            }
-                                            
-                                            if (result == nil) {
-                                                [self drawAssets:assets
-                                                     withIndexes:indexSet
-                                                        callback:callback];
-                                                return;
-                                            }
-                                            
-                                            [assets addObject:result];
-                                        }];
+        NSArray *assets = [self.orderedAssets objectsAtIndexes:indexSet];
+        
+        [self drawAssets:assets withIndexes:indexSet callback:callback];
     });
 }
 
@@ -257,10 +277,10 @@
     NSIndexSet *sectionIndexSet = sectionGroup.assetIndexSet;
     
     NSUInteger loc = self.assetsPerCell * row + sectionIndexSet.firstIndex;
-    NSUInteger length = MIN(self.assetsPerCell, sectionIndexSet.count - loc);
-    NSLog(@"section: %lu, row: %lu, length: %lu, loc: %lu, count: %lu", section, row, (unsigned long)length, loc, sectionIndexSet.count);
+    NSUInteger length = MIN(self.assetsPerCell, sectionIndexSet.lastIndex - loc);
+    NSLog(@"section: %lu, row: %lu, length: %lu, loc: %lu, count: %lu", (long)section, (long)row, (unsigned long)length, (unsigned long)loc, (unsigned long)sectionIndexSet.count);
     NSIndexSet *indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(loc, length)];
-    NSAssert(indexSet.lastIndex < self.assetsGroup.numberOfAssets, @"index set is to big for assetGroup");
+    NSAssert(indexSet.lastIndex < self.orderedAssets.count, @"index set is to big for assetGroup");
     return indexSet;
 }
 
